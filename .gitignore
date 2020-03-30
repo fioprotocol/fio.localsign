@@ -1,0 +1,6 @@
+/network.json
+/package-lock.json
+/localSignedTransactions.txt
+/producers.txt
+.DS_Store
+/node_modules
