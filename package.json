@@ -8,6 +8,10 @@
   },
   "author": "Shawn Arney.  Dapix, Inc. Copyright(c) 2020",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fioprotocol/fio.localsign"
+  },
   "dependencies": {
     "@fioprotocol/fiojs": "1.0.0",
     "@types/text-encoding": "0.0.35",
