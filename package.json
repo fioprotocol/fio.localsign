@@ -1,0 +1,17 @@
+{
+  "name": "LocalSigning",
+  "version": "1.0.0",
+  "description": "Sign Local Transactions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Shawn Arney.  Dapix, Inc. Copyright(c) 2020",
+  "license": "MIT",
+  "dependencies": {
+    "@fioprotocol/fiojs": "1.0.0",
+    "@types/text-encoding": "0.0.35",
+    "node-fetch": "",
+    "fetch-json": "2.2.6"
+  }
+}
