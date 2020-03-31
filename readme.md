@@ -40,7 +40,7 @@ node index.js
 ```
 localSignedTransactions.txt
 ```
-## Remove private keys from config.js (optional, for security)
+## Remove private keys from index.js (optional, for security)
 
 ## Reconnect to the network (if previously disconnected)
 
