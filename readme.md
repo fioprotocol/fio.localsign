@@ -1,32 +1,51 @@
 # Generate Local Signed Transactions
-One can create and sign local transactions using these scripts.
+One can create and sign local FIO transactions using these scripts.
 
-## Install the script dependencies
+## Copy files to local directory
+You can download a zip of the files by clicking on: Clone or download > Download ZIP and copying the files into a local fio.localsign directory.
+
+To install from Github directly:
+```
+git clone https://github.com/fioprotocol/fio.localsign --recursive
+```
+
+## In the fio.localsign directory, install the FIO dependencies
+```
 npm install
+```
+## Generate Network Variables - Required before each run as these are dynamically generated.
+Settings from the network must be set using a networked computer.  These must be run each time before local signing.   Or alteratively, 'network.json' file variables can be set manually.
 
-## Generate Network Variables - Required each time.  As these are dynamically generated.
-Settings from the network must be set using a networked computer.  In order to run the local signing.  These must be run each time before local signing.   Or alteratively, 'network.json' file variables can be set manually.
+### Update baseUrl in network.js. Do not update public/private key yet.
+If you are creating a transaction for FIO Mainnet, you can find a list of FIO API endpoints under the "EOSIO API" at:
+https://github.com/fioprotocol/fio.mainnet
 
-### Instructions for generating network variables
-In network.js, make sure to edit the baseUrl to the correct URL.
-
-## Run the command
+### Run network.js to get the chain information
+```
 node network.js
+```
+### Timing
+You have 20 minutes after generating the network variables to complete the signing and sending of your transaction. After 20 minutes your local signed transaction will be rejected as expired.
 
-## Timing
-You have 20 minutes to complete this process.  Before your local signed transactions expire.
+## Disconnect from the network to create air gap (optional)
 
-## Local Signing
-After generating the network variables.  Local signing can be done.
+## Update index.js with public/private keys and FIO address associated with that public key
+Edit index.js and follow instructions to update the relevant variables.
 
-### Instructions for local signing
-In index.js, variables need to change for your requirements.  Open the index.js file to changes these.
-
-## Run the command
+## Run the command to generate the local signed transactions 
+```
 node index.js
+```
+### This creates a text file called:
+```
+localSignedTransactions.txt
+```
+## Remove private keys from config.js (optional, for security)
 
-## Posting Local Signed Transactions
-After running the local signing command, a text file called localSignedTransactions.txt, with the signed commands can be run on a networked computer.
+## Reconnect to the network (if previously disconnected)
+
+## Run transaction from localSignedTransactions.txt
+The curl transactions in localSignedTransactions.txt can now be run on a networked computer.
 
 ## Copyright
 Author: Shawn Arney
