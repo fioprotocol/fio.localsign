@@ -1,26 +1,20 @@
 /*
-	Generates the local signing commands.  Creating a localSignedTransactions.txt file with the locally signed commands, 
-	to post to baseUrl on a networked computer.  
-	
+	Generates an offline FIO transaction that can be submitted to a FIO API node.
+		
 	This should be run AFTER the network variables are updated (via the command: 'node network.js')
 
 	Instructions:
 	1) Change the baseUrl variable, to the correct URL.
-	2) Change the privateKey, publicKey variables to your keys.
-	3) Change the voterFioAddress to your fioAddress for voting
-	4) Change the producerList to the list of producers you are voting for.  (Open the producers.txt file to see the producers available to vote for)
 
-	5) run the file
+	2) run the file
 	This file is run via command line:
 	i.e.
 		> node index.js
 
 	RESULTS:
-	1) localSignedTransactions.txt has the local signed transactions.
-	2) localSignedTransactions.txt commands can be run, on a networked computer to post them.
+	* localSignedTransactions.txt has the local signed transactions packaged as a curl command 
 
 	Author: Shawn Arney
-	(C)opyright Dapix, Inc 2020.
 */
 
 const properties = require('./properties.js');
