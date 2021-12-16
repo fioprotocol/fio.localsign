@@ -13,7 +13,7 @@
     "url": "git+https://github.com/fioprotocol/fio.localsign"
   },
   "dependencies": {
-    "@fioprotocol/fiojs": "^1.4.0",
+    "@fioprotocol/fiosdk": "^1.4.0",
     "@types/text-encoding": "^0.0.35",
     "node-fetch": "^2.6.1",
     "fetch-json": "^2.2.6"
