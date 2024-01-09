@@ -1,46 +1,47 @@
 /*
-	Generates the local signing commands.  Creating a localSignedTransactions.txt file with the locally signed commands, 
-	to post to baseUrl on a networked computer.  
-	
+	Generates an offline FIO transaction that can be submitted to a FIO API node.
+		
 	This should be run AFTER the network variables are updated (via the command: 'node network.js')
 
 	Instructions:
 	1) Change the baseUrl variable, to the correct URL.
-	2) Change the privateKey, publicKey variables to your keys.
-	3) Change the voterFioAddress to your fioAddress for voting
-	4) Change the producerList to the list of producers you are voting for.  (Open the producers.txt file to see the producers available to vote for)
 
-	5) run the file
+	2) run the file
 	This file is run via command line:
 	i.e.
 		> node index.js
 
 	RESULTS:
-	1) localSignedTransactions.txt has the local signed transactions.
-	2) localSignedTransactions.txt commands can be run, on a networked computer to post them.
+	* localSignedTransactions.txt has the local signed transactions packaged as a curl command 
 
 	Author: Shawn Arney
-	(C)opyright Dapix, Inc 2020.
 */
 
+const properties = require('./properties.js');
 const FIOJS = require('@fioprotocol/fiojs');
 const TextEncoding = require('text-encoding');
-const fs = require("fs"); 
+const fs = require("fs");
+const fetch = require('node-fetch');
 
-// CHANGE THIS URL, to your URL:
-const baseUrl = 'https://testnet.fioprotocol.io/v1/chain/'
 
-// CHANGE THESE to your own keys
-const privateKey = '5KXdx4chSVoMWhcWtQimKTdPmeE1ejAoSYhjhHdhd8KwVYEvGhj'
-const publicKey = 'FIO5MCTHoY4wx9CGtA43W2J4VNfkxmux49x3h2Qu5XGh8bxLscSJ8'
+const baseUrl = properties.server + '/v1/chain/';
+const privateKey = properties.privateKey;
+const publicKey = properties.publicKey;
+const account = properties.account;
+const maxFee = properties.maxFee;
 
-// CHANGE THIS, TO VOTE, this is your voter FioAddress, change this:
-const voterFioAddress = "alice@purse"
+const action = properties.action;
 
-// CHANGE THESE Producers- These are the producers, you are voting for - edit this: -  i.e. ["BP1","BP2","BP3","BP4","BP4","BP5"]
-const producerList = ["bp1fioaddress@","bp2fioaddress@", "bp3fioaddress@"]
+// trnsfiopubky 
+const transferAmount = properties.transferAmount;
+const payeePubKey = properties.payeePubKey;
 
-const max_fee_to_pay = 200000000000 // if this fails, increase this fee.  This is in SUFs.  1B SUFs == 1 FIO Token
+// voteproducer 
+const voterFioAddress = properties.voterFioAddress;
+const producerList = properties.producerList;
+
+
+
 
 // files
 const networkFile = 'network.json';
@@ -55,6 +56,19 @@ ref_block_prefix = ''
 function getAbiMap () {
 
 	abiMap = new Map()
+
+	//tokenRawAbi = await fetch(baseUrl + 'get_raw_abi', { body: `{"account_name": "fio.token"}`, method: 'POST' });
+	//console.log('tokenRawAbi: ', tokenRawAbi)
+	//abiMap.set('fio.token', tokenRawAbi);
+
+	//tokenRawAbi = await(await fetch(baseUrl + 'get_raw_abi', { body: `{"account_name": "eosio"}`, method: 'POST' })).json();
+	//abiMap.set('eosio', tokenRawAbi);
+
+	//tokenRawAbi = await(await fetch(baseUrl + 'get_raw_abi', { body: `{"account_name": "fio.address"}`, method: 'POST' })).json();
+	//abiMap.set('fio.address', tokenRawAbi);
+
+	//tokenRawAbi = await(await fetch(baseUrl + 'get_raw_abi', { body: `{"account_name": "fio.reqobt"}`, method: 'POST' })).json();
+	//abiMap.set('fio.reqobt', tokenRawAbi);
 
 	abiMap.set('fio.token', {
 		account_name: 'fio.token',
@@ -91,18 +105,18 @@ async function generatePushTransaction (actionName, transaction) {
 async function generateSignedTransaction (accountName, actionName, data){
 
 	transaction = {
-	    expiration: getExpirationDate(),
-	    ref_block_num: ref_block_num & 0xffff,
-	    ref_block_prefix: ref_block_prefix,
-	    actions: [{
-	        account: accountName,
-	        name: actionName,
-	        authorization: [{
-	            actor: FIOJS.Fio.accountHash(publicKey),
-	            permission: 'active',
-	        }],
-	        data: data,
-	    }]
+		expiration: getExpirationDate(),
+		ref_block_num: ref_block_num & 0xffff,
+		ref_block_prefix: ref_block_prefix,
+		actions: [{
+				account: accountName,
+				name: actionName,
+				authorization: [{
+					actor: account,
+						permission: 'active',
+				}],
+				data: data,
+		}]
 	};
 
 	const signedTransaction = await FIOJS.Fio.prepareTransaction({
@@ -123,13 +137,13 @@ function getExpirationDate () {
 } 
 
 // this is an example of how to transfer funds
-async function generateTransferFundsExample () {
+async function generateTransferFunds () {
 	const data = {
-        payee_public_key: 'FIO84chAysAXYYjkQgXkhtJBFRn9vfr8yKnjsbJ31TbLw5PMMPWTY',
-        amount: '1000000000',
-        max_fee: 200000000000,
-        actor: FIOJS.Fio.accountHash(publicKey),
-        tpid: ''
+		payee_public_key: payeePubKey,
+		amount: transferAmount,
+		max_fee: maxFee,
+		actor: account,
+    tpid: ''
     }
 
 	const transaction = await generateSignedTransaction ('fio.token', 'trnsfiopubky' , data)
@@ -138,9 +152,9 @@ async function generateTransferFundsExample () {
 async function generateVoteProducerTransaction () {
 	const data = {
 		"producers": producerList,
-    	"fio_address": voterFioAddress,
-    	max_fee: max_fee_to_pay,
-        actor: FIOJS.Fio.accountHash(publicKey),
+    "fio_address": voterFioAddress,
+		max_fee: maxFee,
+		actor: account,
     }
 
 	const transaction = await generateSignedTransaction ('eosio', 'voteproducer' , data)
@@ -152,7 +166,11 @@ function generatePushTransactions () {
 	
 	fs.appendFileSync(signedTransactionFileName, date + "\r\n" + "\r\n");
 
-	generateVoteProducerTransaction();
+	if (action == 'voteproducer') {
+		generateVoteProducerTransaction();
+	} else if (action == 'trnsfiopubky') {
+		generateTransferFunds();
+	}
 }
 
 // start of script
@@ -176,4 +194,4 @@ function main () {
 	}); 
 }
 
-main()
+main();
