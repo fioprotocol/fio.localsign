@@ -1,5 +1,5 @@
 {
-  "name": "LocalSigning",
+  "name": "@fioprotocol/LocalSigning",
   "version": "1.1.0",
   "description": "Sign Local Transactions",
   "main": "index.js",
